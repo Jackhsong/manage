@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="BargainMapper" >
+       
+    <select id="selectListBargainByPara"  resultType="map"  parameterType="map">
+		SELECT  pb.`id` AS id,
+				pb.`product_id` AS productId,
+				pb.`type` AS type,
+				pb.high_discount AS highDiscount,
+				pb.low_discount AS lowDiscount,
+				pb.low_price AS lowPrice,
+				pb.`times` AS times,
+				pb.`status` AS status,
+				pro.product_base_id AS productBaseId,
+				pro.`brand_id` AS brandId,
+				pro.`seller_id` AS sellerId,
+				pro.`code` AS code,
+				pro.`barcode` AS barcode,
+				pro.`start_time` AS startTime,
+				pro.`end_time` AS endTime,
+				pro.`name` AS name,
+				pro.`selling_point` AS sellingPoint,
+				pro.`short_name` AS shortName,
+				pro.`desc` AS `desc`,
+				pro.`market_price` AS marketPrice,
+				pro.`sales_price` AS salesPrice,
+				pro.`image1` AS image1,
+				pro.`image2` AS image2,
+				pro.`image3` AS image3,
+				pro.`image4` AS image4,
+				pro.`image5` AS image5,
+				pro.`net_volume` AS netVolume,
+				pro.`place_of_origin` AS placeOfOrigin,
+				pro.`manufacturer_date` AS manufacturerDate,
+				pro.`storage_method` AS storageMethod,
+				pro.`durability_period` AS durabilityPeriod,
+				pro.`people_for` AS peopleFor,
+				pro.`food_method` AS foodMethod,
+				pro.`use_method` AS useMethod,
+				pro.`pc_detail` AS pcDetail,
+				pro.`tip` AS tip,
+				pro.`remark` AS remark,
+				pro.`is_off_shelves` AS isOffShelves,
+				pro.`is_available` AS isAvailable,
+				pro.`update_time` AS updateTime,
+				ab.`title` AS title,
+				ab.`description` AS description,
+				ab.`is_available` AS isAvailable1,
+				ab.`left_count` AS leftCount,
+				ab.`stock` AS stock
+				FROM `product_bargain` AS pb
+				LEFT JOIN `product` AS pro ON pro.`id` =pb.`product_id` 
+				LEFT JOIN `activity_bargain` AS ab ON ab.`product_id` =pb.`product_id` 
+			WHERE 
+				1=1
+	     		<if test="id != null"> and pb.`id`=#{id} </if>	     		
+	     		<if test="productId != null"> and pb.`product_id`=#{productId} </if>	     			     			     		     		
+	     		<if test="type != null"> and pb.`type`=#{type}</if> 		     		     		
+	     		<if test="status != null"> and pb.`status`=#{status} </if>		     		     		
+	     		<if test="name != null"> and pro.`name` like concat(concat('%',#{name}),'%') </if>	     			 
+	     		<if test="startTime != null"><![CDATA[ and pro.`start_time`>#{startTime} ]]></if>
+   				<if test="endTime != null"><![CDATA[ and pro.`end_time`<#{endTime} ]]></if>
+   			order by pro.`update_time` desc
+     </select> 
+    
+     <update id="updateStatusById" parameterType="map" >
+	    update product_bargain
+	    <set >
+	      <if test="id != null" >
+	        `id` = #{id},
+	      </if>
+	      <if test="highDiscount != null" >
+	        `high_discount` = #{highDiscount},
+	      </if>
+	      <if test="lowDiscount != null" >
+	        `low_discount` = #{lowDiscount},
+	      </if>
+	      <if test="lowPrice != null" >
+	        `low_price` = #{lowPrice},
+	      </if>
+	      <if test="times != null" >
+	        `times` = #{times},
+	      </if>
+	      <if test="status != null" >
+	        `status` = #{status},
+	      </if>
+	    </set>
+	    where id = #{id}
+  	</update>
+    
+    
+   <update id="updateActivityBargain" parameterType="map" >
+	    update activity_bargain
+	    <set >
+	      <if test="productId != null" >
+	        `product_id` = #{productId},
+	      </if>
+	      <if test="title != null" >
+	        `title` = #{title},
+	      </if>
+	      <if test="description != null" >
+	        `description` = #{description},
+	      </if>
+	      <if test="isAvailable != null" >
+	        `is_available` = #{isAvailable},
+	      </if>
+	      <if test="leftCount != null" >
+	        `left_count` = #{leftCount},
+	      </if>
+	      <if test="stock != null" >
+	        `stock` = #{stock},
+	      </if>
+	    </set>
+	    where product_id = #{productId}
+  	</update>
+
+    
+    <update id="updateProductById" parameterType="map" >
+    update product
+    <set >
+      <if test="type != null" >
+        `type` = #{type,jdbcType=TINYINT},
+      </if>
+      <if test="productBaseId != null" >
+        product_base_id = #{productBaseId,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null" >
+        brand_id = #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="freightTemplateId != null" >
+        freight_template_id = #{freightTemplateId,jdbcType=INTEGER},
+      </if>
+      <if test="sellerId != null" >
+        seller_id = #{sellerId,jdbcType=INTEGER},
+      </if>
+      <if test="birdexCode != null" >
+        birdex_code = #{birdexCode,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        `code` = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="barcode != null" >
+        barcode = #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sellerProductName != null" >
+        seller_product_name = #{sellerProductName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        `name` = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sellingPoint != null" >
+        selling_point = #{sellingPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        short_name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="gegeImageId != null" >
+        gege_image_id = #{gegeImageId,jdbcType=INTEGER},
+      </if>
+      <if test="desc != null" >
+        `desc` = #{desc,jdbcType=VARCHAR},
+      </if>
+      <if test="marketPrice != null" >
+        market_price = #{marketPrice,jdbcType=REAL},
+      </if>
+      <if test="salesPrice != null" >
+        sales_price = #{salesPrice,jdbcType=REAL},
+      </if>
+      <if test="partnerDistributionPrice != null" >
+        partner_distribution_price = #{partnerDistributionPrice,jdbcType=REAL},
+      </if>
+      <if test="activityWholesalePrice != null" >
+        activity_wholesale_price = #{activityWholesalePrice,jdbcType=REAL},
+      </if>
+      <if test="activityWholesalePriceStartTime != null" >
+        activity_wholesale_price_start_time = #{activityWholesalePriceStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="activityWholesalePriceEndTime != null" >
+        activity_wholesale_price_end_time = #{activityWholesalePriceEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="image1 != null" >
+        image1 = #{image1,jdbcType=VARCHAR},
+      </if>
+      <if test="image2 != null" >
+        image2 = #{image2,jdbcType=VARCHAR},
+      </if>
+      <if test="image3 != null" >
+        image3 = #{image3,jdbcType=VARCHAR},
+      </if>
+      <if test="image4 != null" >
+        image4 = #{image4,jdbcType=VARCHAR},
+      </if>
+      <if test="image5 != null" >
+        image5 = #{image5,jdbcType=VARCHAR},
+      </if>
+      <if test="netVolume != null" >
+        net_volume = #{netVolume,jdbcType=VARCHAR},
+      </if>
+      <if test="placeOfOrigin != null" >
+        place_of_origin = #{placeOfOrigin,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturerDate != null" >
+        manufacturer_date = #{manufacturerDate,jdbcType=VARCHAR},
+      </if>
+      <if test="storageMethod != null" >
+        storage_method = #{storageMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="durabilityPeriod != null" >
+        durability_period = #{durabilityPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleFor != null" >
+        people_for = #{peopleFor,jdbcType=VARCHAR},
+      </if>
+      <if test="foodMethod != null" >
+        food_method = #{foodMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="useMethod != null" >
+        use_method = #{useMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="tip != null" >
+        `tip` = #{tip,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        `remark` = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="productUseScopeId != null" >
+        product_use_scope_id = #{productUseScopeId,jdbcType=INTEGER},
+      </if>
+      <if test="activitiesStatus != null" >
+        activities_status = #{activitiesStatus,jdbcType=TINYINT},
+      </if>
+      <if test="returnDistributionProportionType != null" >
+        return_distribution_proportion_type = #{returnDistributionProportionType,jdbcType=TINYINT},
+      </if>
+      <if test="isOffShelves != null" >
+        is_off_shelves = #{isOffShelves,jdbcType=TINYINT},
+      </if>
+      <if test="isAvailable != null" >
+        is_available = #{isAvailable,jdbcType=TINYINT},
+      </if>
+      <if test="isRemindStock != null" >
+        is_remind_stock = #{isRemindStock,jdbcType=TINYINT},
+      </if>
+      <if test="isShowInMall != null" >
+        is_show_in_mall = #{isShowInMall,jdbcType=TINYINT},
+      </if>
+      <if test="isAutomaticAdjustStock != null" >
+        is_automatic_adjust_stock = #{isAutomaticAdjustStock,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bsCommision != null" >
+        bs_commision = #{bsCommision,jdbcType=VARCHAR},
+      </if>
+      <if test="isDiscount != null" >
+        is_discount = #{isDiscount,jdbcType=TINYINT},
+      </if>
+      <if test="pcDetail != null" >
+        pc_detail = #{pcDetail,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    
+    <select id="selectTheLastId" resultType="java.lang.Integer">
+        SELECT MAX(`id`) FROM `product`         
+    </select>
+    
+  <insert id="insertProduct" parameterType="map">
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="type != null" >
+        `type`,
+      </if>
+      <if test="productBaseId != null" >
+        product_base_id,
+      </if>
+      <if test="brandId != null" >
+        brand_id,
+      </if>
+      <if test="freightTemplateId != null" >
+        freight_template_id,
+      </if>
+      <if test="sellerId != null" >
+        seller_id,
+      </if>
+      <if test="birdexCode != null" >
+        birdex_code,
+      </if>
+      <if test="code != null" >
+        `code`,
+      </if>
+      <if test="barcode != null" >
+        `barcode`,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="sellerProductName != null" >
+        seller_product_name,
+      </if>
+      <if test="name != null" >
+       `name`,
+      </if>
+      <if test="sellingPoint != null" >
+        selling_point,
+      </if>
+      <if test="name != null" >
+        short_name,
+      </if>
+      <if test="gegeImageId != null" >
+        gege_image_id,
+      </if>
+      <if test="desc != null" >
+        `desc`,
+      </if>
+      <if test="marketPrice != null" >
+        market_price,
+      </if>
+      <if test="salesPrice != null" >
+        sales_price,
+      </if>
+      <if test="partnerDistributionPrice != null" >
+        partner_distribution_price,
+      </if>
+      <if test="activityWholesalePrice != null" >
+        activity_wholesale_price,
+      </if>
+      <if test="activityWholesalePriceStartTime != null" >
+        activity_wholesale_price_start_time,
+      </if>
+      <if test="activityWholesalePriceEndTime != null" >
+        activity_wholesale_price_end_time,
+      </if>
+      <if test="image1 != null" >
+        image1,
+      </if>
+      <if test="image2 != null" >
+        image2,
+      </if>
+      <if test="image3 != null" >
+        image3,
+      </if>
+      <if test="image4 != null" >
+        image4,
+      </if>
+      <if test="image5 != null" >
+        image5,
+      </if>
+      <if test="netVolume != null" >
+        net_volume,
+      </if>
+      <if test="placeOfOrigin != null" >
+        place_of_origin,
+      </if>
+      <if test="manufacturerDate != null" >
+        manufacturer_date,
+      </if>
+      <if test="storageMethod != null" >
+        storage_method,
+      </if>
+      <if test="durabilityPeriod != null" >
+        durability_period,
+      </if>
+      <if test="peopleFor != null" >
+        people_for,
+      </if>
+      <if test="foodMethod != null" >
+        food_method,
+      </if>
+      <if test="useMethod != null" >
+        use_method,
+      </if>
+      <if test="tip != null" >
+        `tip`,
+      </if>
+      <if test="remark != null" >
+        `remark`,
+      </if>
+      <if test="productUseScopeId != null" >
+        product_use_scope_id,
+      </if>
+      <if test="activitiesStatus != null" >
+        activities_status,
+      </if>
+      <if test="returnDistributionProportionType != null" >
+        return_distribution_proportion_type,
+      </if>
+      <if test="isOffShelves != null" >
+        is_off_shelves,
+      </if>
+      <if test="isAvailable != null" >
+        is_available,
+      </if>
+      <if test="isRemindStock != null" >
+        is_remind_stock,
+      </if>
+      <if test="isShowInMall != null" >
+        is_show_in_mall,
+      </if>
+      <if test="isAutomaticAdjustStock != null" >
+        is_automatic_adjust_stock,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="bsCommision != null" >
+        bs_commision,
+      </if>
+      <if test="isDiscount != null" >
+        is_discount,
+      </if>
+      <if test="pcDetail != null" >
+        pc_detail,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="productBaseId != null" >
+        #{productBaseId,jdbcType=INTEGER},
+      </if>
+      <if test="brandId != null" >
+        #{brandId,jdbcType=INTEGER},
+      </if>
+      <if test="freightTemplateId != null" >
+        #{freightTemplateId,jdbcType=INTEGER},
+      </if>
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=INTEGER},
+      </if>
+      <if test="birdexCode != null" >
+        #{birdexCode,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="barcode != null" >
+        #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sellerProductName != null" >
+        #{sellerProductName,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sellingPoint != null" >
+        #{sellingPoint,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="gegeImageId != null" >
+        #{gegeImageId,jdbcType=INTEGER},
+      </if>
+      <if test="desc != null" >
+        #{desc,jdbcType=VARCHAR},
+      </if>
+      <if test="marketPrice != null" >
+        #{marketPrice,jdbcType=REAL},
+      </if>
+      <if test="salesPrice != null" >
+        #{salesPrice,jdbcType=REAL},
+      </if>
+      <if test="partnerDistributionPrice != null" >
+        #{partnerDistributionPrice,jdbcType=REAL},
+      </if>
+      <if test="activityWholesalePrice != null" >
+        #{activityWholesalePrice,jdbcType=REAL},
+      </if>
+      <if test="activityWholesalePriceStartTime != null" >
+        #{activityWholesalePriceStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="activityWholesalePriceEndTime != null" >
+        #{activityWholesalePriceEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="image1 != null" >
+        #{image1,jdbcType=VARCHAR},
+      </if>
+      <if test="image2 != null" >
+        #{image2,jdbcType=VARCHAR},
+      </if>
+      <if test="image3 != null" >
+        #{image3,jdbcType=VARCHAR},
+      </if>
+      <if test="image4 != null" >
+        #{image4,jdbcType=VARCHAR},
+      </if>
+      <if test="image5 != null" >
+        #{image5,jdbcType=VARCHAR},
+      </if>
+      <if test="netVolume != null" >
+        #{netVolume,jdbcType=VARCHAR},
+      </if>
+      <if test="placeOfOrigin != null" >
+        #{placeOfOrigin,jdbcType=VARCHAR},
+      </if>
+      <if test="manufacturerDate != null" >
+        #{manufacturerDate,jdbcType=VARCHAR},
+      </if>
+      <if test="storageMethod != null" >
+        #{storageMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="durabilityPeriod != null" >
+        #{durabilityPeriod,jdbcType=VARCHAR},
+      </if>
+      <if test="peopleFor != null" >
+        #{peopleFor,jdbcType=VARCHAR},
+      </if>
+      <if test="foodMethod != null" >
+        #{foodMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="useMethod != null" >
+        #{useMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="tip != null" >
+        #{tip,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="productUseScopeId != null" >
+        #{productUseScopeId,jdbcType=INTEGER},
+      </if>
+      <if test="activitiesStatus != null" >
+        #{activitiesStatus,jdbcType=TINYINT},
+      </if>
+      <if test="returnDistributionProportionType != null" >
+        #{returnDistributionProportionType,jdbcType=TINYINT},
+      </if>
+      <if test="isOffShelves != null" >
+        #{isOffShelves,jdbcType=TINYINT},
+      </if>
+      <if test="isAvailable != null" >
+        #{isAvailable,jdbcType=TINYINT},
+      </if>
+      <if test="isRemindStock != null" >
+        #{isRemindStock,jdbcType=TINYINT},
+      </if>
+      <if test="isShowInMall != null" >
+        #{isShowInMall,jdbcType=TINYINT},
+      </if>
+      <if test="isAutomaticAdjustStock != null" >
+        #{isAutomaticAdjustStock,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="bsCommision != null" >
+        #{bsCommision,jdbcType=VARCHAR},
+      </if>
+      <if test="isDiscount != null" >
+        #{isDiscount,jdbcType=TINYINT},
+      </if>
+      <if test="pcDetail != null" >
+        #{pcDetail,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+    
+    
+    <insert id="insertProductBargain" parameterType="map" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into product_bargain
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="type != null" >
+        `type`,
+      </if>
+      <if test="highDiscount != null" >
+        high_discount,
+      </if>
+      <if test="lowDiscount != null" >
+        low_discount,
+      </if>
+      <if test="lowPrice != null" >
+        low_price,
+      </if>
+      <if test="times != null" >
+        `times`,
+      </if>
+      <if test="status != null" >
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=TINYINT},
+      </if>
+      <if test="highDiscount != null" >
+        #{highDiscount,jdbcType=REAL},
+      </if>
+      <if test="lowDiscount != null" >
+        #{lowDiscount,jdbcType=REAL},
+      </if>
+      <if test="lowPrice != null" >
+        #{lowPrice,jdbcType=REAL},
+      </if>
+      <if test="times != null" >
+        #{times,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+    
+    
+  <insert id="insertActivityBargain" parameterType="map" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="BEFORE" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into activity_bargain
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="title != null" >
+        `title`,
+      </if>
+      <if test="description != null" >
+        `description`,
+      </if>
+      <if test="image != null" >
+        `image`,
+      </if>
+      <if test="isAvailable != null" >
+        is_available,
+      </if>
+      <if test="accountId != null" >
+        account_id,
+      </if>
+      <if test="leftCount != null" >
+        left_count,
+      </if>
+      <if test="loginTime != null" >
+        login_time,
+      </if>
+      <if test="shareCount != null" >
+        share_count,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="stock != null" >
+        `stock`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null" >
+        #{isAvailable,jdbcType=TINYINT},
+      </if>
+      <if test="accountId != null" >
+        #{accountId,jdbcType=INTEGER},
+      </if>
+      <if test="leftCount != null" >
+        #{leftCount,jdbcType=INTEGER},
+      </if>
+      <if test="loginTime != null" >
+        #{loginTime,jdbcType=INTEGER},
+      </if>
+      <if test="shareCount != null" >
+        #{shareCount,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="stock != null" >
+        #{stock,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert> 
+    
+  
+  <delete id="deleteProductById" parameterType="java.lang.Integer" >
+    delete from product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+    
+  <delete id="deleteProductBargainById" parameterType="java.lang.Integer" >
+    delete from product_bargain
+    where product_id = #{productId,jdbcType=INTEGER}
+  </delete>
+    
+ <delete id="deleteActivityByProductId" parameterType="java.lang.Integer" >
+    delete from activity_bargain
+    where product_id = #{productId,jdbcType=INTEGER}
+  </delete>
+    
+    
+
+  
+</mapper>

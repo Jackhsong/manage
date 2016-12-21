@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ManagerMapper" >
+
+  <resultMap id="BaseResultMap" type="ManagerEntity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="pwd" property="pwd" jdbcType="VARCHAR" />
+    <result column="enabled" property="enabled" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, `name`, `pwd`, `enabled`, create_time
+  </sql>
+  
+    <insert id="insertManager" parameterType="ManagerEntity" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into `manager`
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="pwd != null" >
+        `pwd`,
+      </if>
+      <if test="enabled != null" >
+        `enabled`,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null" >
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null" >
+        #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+   <update id="updateByName" parameterType="ManagerEntity" >
+    update `manager`
+    <set >
+      <if test="pwd != null" >
+        `pwd` = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="enabled != null" >
+        `enabled` = #{enabled,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where name = #{name,jdbcType=VARCHAR}
+  </update>
+  
+   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+	    select 
+	    <include refid="Base_Column_List" />
+	    from manager
+	    where  name = #{name,jdbcType=VARCHAR}
+   </select>
+  
+   
+     <!-- 查询菜单信息 -->
+     <select id="findAllMenuByPara" parameterType="map"  resultType="map">
+     	SELECT 
+     		id,`text`,url,sequence,pid
+     	FROM 
+     		menu 
+     	WHERE 
+     		1=1 
+     		<if test="id != null"> AND id=#{id} </if>
+     		<if test="pid != null">AND pid=#{pid} </if>
+     		<if test="idList != null">
+     			AND id in
+				<foreach item="item" index="index" collection="idList" open="(" separator="," close=")">
+					#{item}
+				</foreach>     		
+     		</if>
+     	ORDER BY sequence DESC ,id DESC
+     </select>
+  
+ 
+</mapper>
